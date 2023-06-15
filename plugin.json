@@ -1,0 +1,24 @@
+{
+	"pluginName": "悬浮文本",
+	"description": "将文本钉在桌面备用",
+	"author": "IT老大哥",
+	"homepage": "https://www.itldg.com",
+	"preload": "preload.js",
+	"version": "1.0.0",
+	"logo": "icon.png",
+	"features": [
+		{
+			"code": "suspend",
+			"cmds": [
+				{
+					"type": "over",
+					"label": "悬浮文本",
+					"minLength": 1
+				},
+				"悬浮文本",
+				"固定文本",
+				"钉住文本"
+			]
+		}
+	]
+}
