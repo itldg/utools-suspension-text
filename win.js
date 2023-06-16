@@ -1,4 +1,4 @@
-;(async () => {
+window.init=async () => {
 	//基本选项
 	const options = {
 		//字宽
@@ -35,14 +35,14 @@
 		}
 		//末尾+10 适应滚动条
 		const width = (maxWidth > options.maxWidth ? options.maxWidth : maxWidth) + options.border * 2 + 10
-		window.resizeTo(width, 40)
+		window.resize(width, fontSize)
 		autoHeight(width)
 	} else {
 		console.log('使用上次缓存内容')
 		const width = localStorage.getItem('width')
 		const height = localStorage.getItem('height')
 		if (width && height) {
-			window.resizeTo(width, height)
+			window.resize(width, height)
 		}
 	}
 	content.style.height = '100%'
@@ -85,9 +85,9 @@
 		//获取dom的高度,更改窗口高度
 		const height = content.scrollHeight + options.border * 2
 		// console.log('高度', height)
-		window.resizeTo(width, height)
+		window.resize(width, height)
 	}
-})()
+}
 
 /**
  * 等待一段时间
