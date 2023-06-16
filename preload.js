@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron')
+const fs = require('fs')
 function show() {
 	const ubWindow = utools.createBrowserWindow(
 		'win.html',
@@ -31,10 +32,27 @@ function show() {
 				ubWindow.webContents.openDevTools()
 			}
 
+			//调整窗口尺寸
 			ipcRenderer.on('resize', (event, width, height) => {
 				if (event.senderId == ubWindow.webContents.id) {
 					ubWindow.setSize(parseInt(width), parseInt(height))
 					ubWindow.center() // 窗口居中
+				}
+			})
+
+			//保存悬浮文本
+			ipcRenderer.on('saveText', (event, text) => {
+				if (event.senderId == ubWindow.webContents.id) {
+					let defaultPath = utools.getPath('downloads') + '/suspend_text_' + new Date().getTime() + '.txt'
+					let savePath = utools.showSaveDialog({
+						title: '保存悬浮文本',
+						defaultPath: defaultPath,
+						buttonLabel: '保存',
+					})
+					if (savePath) {
+						fs.writeFileSync(savePath, text)
+						utools.showNotification('保存成功')
+					}
 				}
 			})
 			// 显示

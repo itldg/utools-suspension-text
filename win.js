@@ -1,4 +1,4 @@
-window.init=async () => {
+window.init = async () => {
 	//基本选项
 	const options = {
 		//字宽
@@ -59,6 +59,12 @@ window.init=async () => {
 				localStorage.setItem('height', window.outerHeight)
 			}
 			window.close()
+		}
+		if (!event.ctrlKey) return
+		//保存文件
+		if (event.key === 's') {
+			event.preventDefault()
+			window.saveText(content.value)
 		}
 	})
 
