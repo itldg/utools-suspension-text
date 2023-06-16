@@ -3,16 +3,20 @@ function show() {
 		'win.html',
 		{
 			show: false,
+			// 无任务栏图标
 			skipTaskbar: true,
 			//不能最大最小化
 			minimizable: false,
 			maximizable: false,
+			// 全屏
 			fullscreenable: false,
 			//背景透明，防止放大缩小时出现白框
 			transparent: true,
 			backgroundColor: '#00000000',
 			frame: false,
 			alwaysOnTop: true,
+			// 无边框
+			thickFrame: false,
 		},
 		() => {
 			if (utools.isDev()) {

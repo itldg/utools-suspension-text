@@ -51,9 +51,17 @@
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
+			if (event.ctrlKey) {
+				localStorage.clear()
+			} else {
+				localStorage.setItem('lastText', content.value)
+				localStorage.setItem('width', window.outerWidth)
+				localStorage.setItem('height', window.outerHeight)
+			}
 			window.close()
 		}
 	})
+
 	// 绑定鼠标滚轮事件
 	document.addEventListener('wheel', function (event) {
 		// 检查是否按下了Ctrl键
@@ -70,12 +78,6 @@
 			changeFontSize(fontSize)
 		}
 	})
-	//关闭前保存数据
-	window.onbeforeunload = () => {
-		localStorage.setItem('lastText', content.value)
-		localStorage.setItem('width', window.outerWidth)
-		localStorage.setItem('height', window.outerHeight)
-	}
 
 	async function autoHeight(width) {
 		//加个延迟,避免之前的宽度修改未生效
