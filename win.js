@@ -2,12 +2,16 @@
 	//基本选项
 	const options = {
 		//字宽
-		fontwidth: 20,
+		fontSize: 20,
+		//最小字体尺寸
+		minFontSize: 6,
 		//边框尺寸
 		border: 10,
-		//默认最大宽度
+		//最大宽度
 		maxWidth: 600,
 	}
+	let fontSize = localStorage.getItem('fontSize') ?? options.fontSize
+	changeFontSize(fontSize)
 	//根据系统主题更改主题
 	const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 	isDark && document.body.classList.add('dark')
@@ -18,46 +22,68 @@
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''
 	content.value = lastText
-	let width
+
 	if (localStorage.getItem('new') !== null) {
 		console.log('带着内容进入插件')
 		localStorage.removeItem('new')
 		//根据文本计算每行最宽
 		const lines = lastText.split('\n')
-		let line = ''
 		let maxWidth = 0
 		const font = window.getComputedStyle(content).font
-		console.log(font)
 		for (let i = 0; i < lines.length; i++) {
 			maxWidth = Math.max(maxWidth, getTextWidth(lines[i], font))
 		}
 		//末尾+10 适应滚动条
-		width = (maxWidth > options.maxWidth ? options.maxWidth : maxWidth) + options.border * 2 + 10
+		const width = (maxWidth > options.maxWidth ? options.maxWidth : maxWidth) + options.border * 2 + 10
+		window.resizeTo(width, 40)
+		autoHeight(width)
 	} else {
 		console.log('使用上次缓存内容')
-		width = localStorage.getItem('width')
+		const width = localStorage.getItem('width')
+		const height = localStorage.getItem('height')
+		if (width && height) {
+			window.resizeTo(width, height)
+		}
 	}
-	if (width) {
-		window.resizeTo(width, 40)
-		await sleep()
-		//获取dom的高度,更改窗口高度
-		const height = content.offsetHeight + content.scrollHeight + options.border * 2
-		window.resizeTo(width, height)
-		content.style.height = '100%'
-		//设置焦点
-		content.focus()
-	}
-
+	content.style.height = '100%'
+	//设置焦点
+	content.focus()
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
 			window.close()
 		}
 	})
+	// 绑定鼠标滚轮事件
+	document.addEventListener('wheel', function (event) {
+		// 检查是否按下了Ctrl键
+		if (event.ctrlKey) {
+			// 判断滚轮方向
+			if (event.deltaY < 0) {
+				// 放大字体
+				fontSize++
+			} else {
+				// 缩小字体
+				fontSize--
+				fontSize < options.minFontSize && (fontSize = options.minFontSize)
+			}
+			changeFontSize(fontSize)
+		}
+	})
 	//关闭前保存数据
 	window.onbeforeunload = () => {
 		localStorage.setItem('lastText', content.value)
 		localStorage.setItem('width', window.outerWidth)
+		localStorage.setItem('height', window.outerHeight)
+	}
+
+	async function autoHeight(width) {
+		//加个延迟,避免之前的宽度修改未生效
+		await sleep()
+		//获取dom的高度,更改窗口高度
+		const height = content.scrollHeight + options.border * 2
+		// console.log('高度', height)
+		window.resizeTo(width, height)
 	}
 })()
 
@@ -81,4 +107,13 @@ function getTextWidth(text, font) {
 	context.font = font
 	var metrics = context.measureText(text)
 	return metrics.width
+}
+
+/**
+ * 修改页面字体大小(修改CSS变量的方式)
+ * @param {Number} newFontSize 新的字体大小
+ */
+function changeFontSize(newFontSize) {
+	document.documentElement.style.setProperty('--font-size', newFontSize + 'px')
+	localStorage.setItem('fontSize', newFontSize)
 }

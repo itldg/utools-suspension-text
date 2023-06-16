@@ -4,11 +4,12 @@
 	"author": "IT老大哥",
 	"homepage": "https://www.itldg.com",
 	"preload": "preload.js",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"logo": "icon.png",
 	"features": [
 		{
 			"code": "suspend",
+			"explain": "将输入的内容悬浮在桌面上",
 			"cmds": [
 				{
 					"type": "over",
