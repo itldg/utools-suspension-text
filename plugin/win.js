@@ -51,7 +51,7 @@ window.init = async () => {
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
-			if (event.ctrlKey) {
+			if (event.altKey) {
 				localStorage.clear()
 			} else {
 				localStorage.setItem('lastText', content.value)
