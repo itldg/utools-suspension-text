@@ -46,19 +46,29 @@ window.init = async () => {
 		}
 	}
 	content.style.height = '100%'
+	let lastWidth = 0
+	let lastHeight = 0
 	//设置焦点
 	content.focus()
+	let closeTimer = null
+	let escFirst = false
+	function close() {
+		localStorage.setItem('lastText', content.value)
+		localStorage.setItem('width', window.outerWidth)
+		localStorage.setItem('height', window.outerHeight)
+		window.close()
+	}
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
 		if (event.key === 'Escape') {
-			if (event.altKey) {
+			if (escFirst) {
+				clearTimeout(closeTimer)
 				localStorage.clear()
-			} else {
-				localStorage.setItem('lastText', content.value)
-				localStorage.setItem('width', window.outerWidth)
-				localStorage.setItem('height', window.outerHeight)
+				window.close()
+				return
 			}
-			window.close()
+			escFirst = true
+			closeTimer = setTimeout(close, 200)
 		}
 		if (!event.ctrlKey) return
 		//保存文件
@@ -88,8 +98,6 @@ window.init = async () => {
 	let moveIng = false
 	let startX = 0
 	let startY = 0
-	let lastWidth = 0
-	let lastHeight = 0
 	const move = (event) => {
 		if (!moveIng) return
 		const x = window.screenX + event.clientX - startX

@@ -14,6 +14,5 @@ window.saveText = (text) => {
 }
 
 window.moveBounds = (x, y, width, height) => {
-	console.log(x, y, width, height)
 	ipcRenderer.sendTo(winId, 'moveBounds', x, y, width, height);
 }
