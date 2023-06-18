@@ -85,6 +85,34 @@ window.init = async () => {
 		}
 	})
 
+	let moveIng = false
+	let startX = 0
+	let startY = 0
+	let lastWidth = 0
+	let lastHeight = 0
+	const move = (event) => {
+		if (!moveIng) return
+		const x = window.screenX + event.clientX - startX
+		const y = window.screenY + event.clientY - startY
+		window.moveBounds(parseInt(x), parseInt(y), lastWidth, lastHeight)
+	}
+	//绑定拖拽移动事件
+	document.addEventListener('mousedown', (event) => {
+		if (event.button === 0 && event.target.tagName !== 'TEXTAREA') {
+			moveIng = true
+			startX = parseInt(event.clientX)
+			startY = parseInt(event.clientY)
+			lastWidth = parseInt(window.outerWidth)
+			lastHeight = parseInt(window.outerHeight)
+			document.addEventListener('mousemove', move)
+		}
+	})
+	document.addEventListener('mouseup', (event) => {
+		if (!moveIng) return
+		document.removeEventListener('mousemove', move)
+		moveIng = false
+	})
+
 	async function autoHeight(width) {
 		//加个延迟,避免之前的宽度修改未生效
 		await sleep()

@@ -21,7 +21,8 @@ body.dark {
 	color: #999999;
 }
 #container {
-	-webkit-app-region: drag;
+	/* win支持不好,不支持自定义光标样式 */
+	/* -webkit-app-region: drag; */
 	padding: 10px;
 	cursor: move;
 	height: 100vh;

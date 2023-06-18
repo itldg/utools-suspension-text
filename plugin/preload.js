@@ -55,6 +55,19 @@ function show() {
 					}
 				}
 			})
+			
+			//拖拽移动窗口(纯css的win支持不好,光标不变化)
+			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
+				if (event.senderId == ubWindow.webContents.id) {
+					let newBounds = {
+						x: parseInt(x),
+						y: parseInt(y),
+						width: parseInt(width),
+						height: parseInt(height),
+					}
+					ubWindow.setBounds(newBounds)
+				}
+			})
 			// 显示
 			ubWindow.show()
 			// 初始化
