@@ -11,6 +11,8 @@ const userOption = {
 	opacity: 9,
 	//字体大小
 	fontSize: 20,
+	//字体
+	fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
 
 	//最小字体尺寸
 	minFontSize: 6,
@@ -28,6 +30,7 @@ function show(options) {
 	elstyle.setProperty('--light-color', hexToRgba(options.lightColor, options.opacity / 10))
 	elstyle.setProperty('--dark-font-color', options.darkFontColor)
 	elstyle.setProperty('--dark-color', hexToRgba(options.darkColor, options.opacity / 10))
+	elstyle.setProperty('--font-family', options.fontFamily)
 
 	//根据系统主题更改主题
 	const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -42,10 +45,15 @@ window.init = async () => {
 	show(options)
 	//dom元素
 	const content = document.getElementById('content')
+	const fontList = document.getElementById('fontList')
 	const option = document.getElementById('option')
-	document.getElementById('setting-btn').addEventListener('click', () => {
-		if (window.outerWidth < 200 || window.outerHeight < 400) {
-			window.resize(200, 400)
+	document.getElementById('setting-btn').addEventListener('click',async () => {
+		if (option.style.display === 'block') return
+		if (fontList.innerHTML === '') {
+			await logFontData()
+		}
+		if (window.outerWidth < 320 || window.outerHeight < 420) {
+			window.resize(Math.max(window.outerWidth, 320), Math.max(window.outerHeight, 420))
 		}
 		option.style.display = 'block'
 		document.body.classList.add('open')
@@ -138,6 +146,27 @@ window.init = async () => {
 		}
 	})
 
+	async function logFontData() {
+		try {
+			let availableFonts = await window.queryLocalFonts()
+			availableFonts.sort((a, b) => {
+				return a.fullName.localeCompare(b.fullName)
+			})
+			let html = ''
+			for (const fontData of availableFonts) {
+				let font = fontData.fullName
+				if (!isSupportFontFamily(fontData.fullName)) {
+					font = fontData.family
+				}
+				html += `<option value="${font}" style="font-family: '${font}';">${fontData.fullName}</option>`
+			}
+			fontList.innerHTML = html
+			initSelect()
+		} catch (err) {
+			console.error(err.name, err.message)
+		}
+	}
+
 	let moveIng = false
 	let startX = 0
 	let startY = 0
@@ -193,6 +222,94 @@ window.init = async () => {
 		}
 		optionTemp = { ...options }
 	}
+
+	function initSelect() {
+		let selects = document.querySelectorAll('.ldg-select')
+		selects.forEach(function (select) {
+			var selectInput = select.querySelector('.ldg-select-input')
+			var selectDropdown = select.querySelector('.ldg-select-dropdown')
+			var selectItems = Array.from(selectDropdown.children)
+
+			// 显示下拉菜单
+			selectInput.addEventListener('click', function () {
+				selectDropdown.style.display = 'block'
+			})
+
+			// 隐藏下拉菜单
+			document.addEventListener('click', function (event) {
+				const parent = event.target.closest('.ldg-select')
+				if (parent != select) {
+					selectDropdown.style.display = 'none'
+				}
+			})
+
+			// 选择选项
+			selectItems.forEach(function (item) {
+				item.addEventListener('click', function () {
+					selectInput.value = item.value
+					selectDropdown.style.display = 'none'
+					optionTemp['fontFamily'] = item.value
+					show(optionTemp)
+				})
+			})
+
+			// 监听键盘事件
+			selectInput.addEventListener('keydown', function (event) {
+				let selectedItem = select.querySelector('.selected')
+				if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+					event.preventDefault()
+					let filteredItems = Array.from(selectItems).filter(function (item) {
+						return getComputedStyle(item).display !== 'none'
+					})
+					if (selectedItem) {
+						selectedItem.classList.remove('selected')
+						if (filteredItems.length === 1) {
+							selectedItem = filteredItems[0]
+						} else if (filteredItems.length === 0) {
+							selectedItem = null
+						} else {
+							let index = filteredItems.findIndex((item) => item === selectedItem)
+							event.key === 'ArrowDown' ? index++ : index--
+							if (index < 0) index = 0
+							if (index >= filteredItems.length) index = filteredItems.length - 1
+							selectedItem = filteredItems[index]
+						}
+					}
+
+					if (!selectedItem) {
+						selectedItem = event.key === 'ArrowDown' ? filteredItems[0] : filteredItems[filteredItems.length - 1]
+					}
+					if (selectedItem) {
+						selectedItem.classList.add('selected')
+						selectInput.value = selectedItem.value
+						selectedItem.scrollIntoView()
+						optionTemp['fontFamily'] = selectedItem.value
+						show(optionTemp)
+					}
+				} else if (event.key === 'Enter') {
+					event.preventDefault()
+					if (selectedItem) {
+						selectDropdown.style.display = 'none'
+					}
+				}
+			})
+
+			// 监听输入事件
+			selectInput.addEventListener('input', function () {
+				var searchText = selectInput.value.toLowerCase()
+
+				selectItems.forEach(function (item) {
+					var itemText = item.textContent.toLowerCase()
+
+					if (itemText.includes(searchText)) {
+						item.style.display = 'block'
+					} else {
+						item.style.display = 'none'
+					}
+				})
+			})
+		})
+	}
 }
 
 /**
@@ -241,4 +358,47 @@ function changeFontSize() {
  */
 function saveOptions() {
 	localStorage.setItem('option', JSON.stringify(options))
+}
+
+/**
+ * 检查字体是否存在
+ * @param {String} f 字体名称
+ * @return {Boolean}
+ */
+function isSupportFontFamily(f) {
+	//    f是要检测的字体
+	if (typeof f != 'string') {
+		return false
+	}
+	//    h是基础字体
+	var h = 'Arial'
+	if (f.toLowerCase() == h.toLowerCase()) {
+		return true
+	}
+	//    设置一个检测的字符A,看他是否支持f字体
+	var e = 'a'
+	var d = 100
+	var a = 100,
+		i = 100
+	var c = document.createElement('canvas')
+	var b = c.getContext('2d')
+	c.width = a
+	c.height = i
+	b.textAlign = 'center'
+	b.fillStyle = 'black'
+	b.textBaseline = 'middle'
+	var g = function (j) {
+		b.clearRect(0, 0, a, i)
+		//        字体是传入的j,或者是默认的h
+		b.font = d + 'px ' + j + ', ' + h
+		b.fillText(e, a / 2, i / 2)
+		//        获取所有的canvas图片信息
+		var k = b.getImageData(0, 0, a, i).data
+		//        k调用数组的 filter方法,筛选符合条件的。改变原数组。
+		return [].slice.call(k).filter(function (l) {
+			return l != 0
+		})
+	}
+	//    返回结果,如果h默认字体和输入待检测字体f.通过g函数检测得到的字符串不一致,说明自提生效
+	return g(h).join('') !== g(f).join('')
 }
