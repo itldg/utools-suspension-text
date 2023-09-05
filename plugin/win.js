@@ -92,9 +92,16 @@ window.init = async () => {
 		console.log('使用上次缓存内容')
 		const width = localStorage.getItem('width')
 		const height = localStorage.getItem('height')
+		const positionJSON = localStorage.getItem('position')
 		if (width && height) {
 			window.resize(width, height)
+			// 位置记忆
+			if(positionJSON){
+				const position  = JSON.parse(positionJSON)
+				window.moveBounds(position.x, position.y, width, height)
+			}
 		}
+		
 	}
 	content.style.height = '100%'
 	let lastWidth = 0
@@ -107,6 +114,11 @@ window.init = async () => {
 		localStorage.setItem('lastText', content.value)
 		localStorage.setItem('width', window.outerWidth)
 		localStorage.setItem('height', window.outerHeight)
+		const position = {
+			y: window.screenTop,
+			x: window.screenLeft, 
+		}
+		localStorage.setItem('position', JSON.stringify(position))
 		window.close()
 	}
 	//按下esc关闭窗口
