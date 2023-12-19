@@ -385,7 +385,11 @@ function changeFontSize() {
 function saveOptions() {
 	localStorage.setItem('option', JSON.stringify(options))
 }
-
+const canvasTemp = document.createElement('canvas')
+const ctx = canvasTemp.getContext('2d',{ willReadFrequently: true })
+ctx.textAlign = 'center'
+ctx.fillStyle = 'black'
+ctx.textBaseline = 'middle'
 /**
  * 检查字体是否存在
  * @param {String} f 字体名称
@@ -406,20 +410,15 @@ function isSupportFontFamily(f) {
 	var d = 100
 	var a = 100,
 		i = 100
-	var c = document.createElement('canvas')
-	var b = c.getContext('2d')
-	c.width = a
-	c.height = i
-	b.textAlign = 'center'
-	b.fillStyle = 'black'
-	b.textBaseline = 'middle'
+	ctx.width = a
+	ctx.height = i
 	var g = function (j) {
-		b.clearRect(0, 0, a, i)
+		ctx.clearRect(0, 0, a, i)
 		//        字体是传入的j,或者是默认的h
-		b.font = d + 'px ' + j + ', ' + h
-		b.fillText(e, a / 2, i / 2)
+		ctx.font = d + 'px ' + j + ', ' + h
+		ctx.fillText(e, a / 2, i / 2)
 		//        获取所有的canvas图片信息
-		var k = b.getImageData(0, 0, a, i).data
+		var k = ctx.getImageData(0, 0, a, i).data
 		//        k调用数组的 filter方法,筛选符合条件的。改变原数组。
 		return [].slice.call(k).filter(function (l) {
 			return l != 0
