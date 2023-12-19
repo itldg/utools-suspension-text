@@ -37,6 +37,6 @@
 
 ## 代码开源
 
-代码已开源:[GitHub](https://github.com/qinyongliang/suspension-utools) [Gitee](https://gitee.com/itldg/utools-suspension-text)
+代码已开源:[GitHub](https://github.com/itldg/utools-suspension-text) [Gitee](https://gitee.com/itldg/utools-suspension-text)
 
 欢迎大家添砖加瓦
