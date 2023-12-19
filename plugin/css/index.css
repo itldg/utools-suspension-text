@@ -66,21 +66,6 @@ body.dark #content {
 	background: rgba(0, 0, 0, 0);
 }
 
-#setting-btn {
-	cursor: pointer;
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	width: 18px;
-	height: 18px;
-	display: none;
-	color: gray;
-}
-
-body:not(.open) #container:hover #setting-btn {
-	display: block;
-}
-
 #option {
 	position: absolute;
 	top: 50%;
@@ -204,4 +189,23 @@ body:not(.open) #container:hover #setting-btn {
 
 .ldg-select-dropdown > *.selected {
 	background-color: #ccc;
+}
+
+#top-bar {
+	height: 30px;
+	background: rgba(0, 0, 0, 0.4);
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 10px;
+	cursor: move;
+	user-select: none;
+}
+
+.top-bar-icon {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	--color: #fff;
 }

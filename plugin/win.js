@@ -47,7 +47,8 @@ window.init = async () => {
 	const content = document.getElementById('content')
 	const fontList = document.getElementById('fontList')
 	const option = document.getElementById('option')
-	document.getElementById('setting-btn').addEventListener('click',async () => {
+	const topBar = document.getElementById('top-bar')
+	document.getElementById('setting-btn').addEventListener('click', async () => {
 		if (option.style.display === 'block') return
 		if (fontList.innerHTML === '') {
 			await logFontData()
@@ -70,6 +71,19 @@ window.init = async () => {
 		options = { ...optionTemp }
 		saveOptions()
 	})
+	document.getElementById('close-btn').addEventListener('click', close)
+	const tip = document.getElementById('tip')
+	const tips = ['Esc键 可以关闭窗口', '连按2次 Esc键 关闭窗口并清空内容', 'Ctrl + 鼠标滚轮 放大缩小字体', 'Ctrl + S 保存内容到到文件']
+	let tipIndex = 0
+	const nextTip = () => {
+		tip.innerText = tips[tipIndex]
+		tipIndex++
+		tipIndex >= tips.length && (tipIndex = 0)
+	}
+	setInterval(() => {
+		nextTip()
+	}, 3000)
+	nextTip()
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''
 	content.value = lastText
@@ -96,12 +110,11 @@ window.init = async () => {
 		if (width && height) {
 			window.resize(width, height)
 			// 位置记忆
-			if(positionJSON){
-				const position  = JSON.parse(positionJSON)
+			if (positionJSON) {
+				const position = JSON.parse(positionJSON)
 				window.moveBounds(position.x, position.y, width, height)
 			}
 		}
-		
 	}
 	content.style.height = '100%'
 	let lastWidth = 0
@@ -116,7 +129,7 @@ window.init = async () => {
 		localStorage.setItem('height', window.outerHeight)
 		const position = {
 			y: window.screenTop,
-			x: window.screenLeft, 
+			x: window.screenLeft,
 		}
 		localStorage.setItem('position', JSON.stringify(position))
 		window.close()
@@ -188,9 +201,10 @@ window.init = async () => {
 		const y = window.screenY + event.clientY - startY
 		window.moveBounds(parseInt(x), parseInt(y), lastWidth, lastHeight)
 	}
+
 	//绑定拖拽移动事件
-	document.addEventListener('mousedown', (event) => {
-		if (event.button === 0 && event.target.id === 'container') {
+	topBar.addEventListener('mousedown', (event) => {
+		if (event.button === 0) {
 			moveIng = true
 			startX = parseInt(event.clientX)
 			startY = parseInt(event.clientY)
@@ -199,7 +213,7 @@ window.init = async () => {
 			document.addEventListener('mousemove', move)
 		}
 	})
-	document.addEventListener('mouseup', (event) => {
+	topBar.addEventListener('mouseup', (event) => {
 		if (!moveIng) return
 		document.removeEventListener('mousemove', move)
 		moveIng = false
