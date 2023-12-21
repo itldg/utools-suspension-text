@@ -216,6 +216,12 @@ body.dark #content {
 	height: 16px;
 	--color: #fff;
 	margin-left: 10px;
+	transition: all;
+	transition-duration: 200ms;
+}
+.top-bar-icon:hover {
+	--color: #ff3d00;
+	transform: scale(1.1);
 }
 .top-bar-icon:first-of-type {
 	margin-left: 0px;
