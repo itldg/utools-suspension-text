@@ -215,6 +215,10 @@ body.dark #content {
 	width: 16px;
 	height: 16px;
 	--color: #fff;
+	margin-left: 10px;
+}
+.top-bar-icon:first-of-type {
+	margin-left: 0px;
 }
 @media (width <= 140px) {
 	#soft-title {

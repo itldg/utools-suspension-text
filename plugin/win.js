@@ -72,6 +72,10 @@ window.init = async () => {
 		saveOptions()
 	})
 	document.getElementById('close-btn').addEventListener('click', close)
+	document.getElementById('save-btn').addEventListener('click', () => {
+		window.saveText(content.value)
+	})
+
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''
 	content.value = lastText
@@ -374,7 +378,7 @@ function saveOptions() {
 	localStorage.setItem('option', JSON.stringify(options))
 }
 const canvasTemp = document.createElement('canvas')
-const ctx = canvasTemp.getContext('2d',{ willReadFrequently: true })
+const ctx = canvasTemp.getContext('2d', { willReadFrequently: true })
 ctx.textAlign = 'center'
 ctx.fillStyle = 'black'
 ctx.textBaseline = 'middle'
