@@ -31,7 +31,6 @@ body.dark {
 	/* win支持不好,不支持自定义光标样式 */
 	/* -webkit-app-region: drag; */
 	padding: 10px;
-	cursor: move;
 	height: 100vh;
 	box-shadow: 5px 10px 12px -3px #b5b4b3;
 }
@@ -195,12 +194,20 @@ body.dark #content {
 	height: 30px;
 	background: rgba(0, 0, 0, 0.4);
 	color: #fff;
-	display: flex;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
 	align-items: center;
 	justify-content: space-between;
 	padding: 0 10px;
 	cursor: move;
 	user-select: none;
+	display: none;
+	z-index: 2;
+}
+#container:hover #top-bar {
+	display: flex;
 }
 
 .top-bar-icon {
@@ -208,4 +215,9 @@ body.dark #content {
 	width: 16px;
 	height: 16px;
 	--color: #fff;
+}
+@media (width <= 140px) {
+	#soft-title {
+		display: none;
+	}
 }

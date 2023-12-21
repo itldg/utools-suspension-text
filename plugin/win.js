@@ -72,18 +72,6 @@ window.init = async () => {
 		saveOptions()
 	})
 	document.getElementById('close-btn').addEventListener('click', close)
-	const tip = document.getElementById('tip')
-	const tips = ['Esc键 可以关闭窗口', '连按2次 Esc键 关闭窗口并清空内容', 'Ctrl + 鼠标滚轮 放大缩小字体', 'Ctrl + S 保存内容到到文件']
-	let tipIndex = 0
-	const nextTip = () => {
-		tip.innerText = tips[tipIndex]
-		tipIndex++
-		tipIndex >= tips.length && (tipIndex = 0)
-	}
-	setInterval(() => {
-		nextTip()
-	}, 3000)
-	nextTip()
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''
 	content.value = lastText
