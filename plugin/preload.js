@@ -52,6 +52,7 @@ function show() {
 					if (savePath) {
 						fs.writeFileSync(savePath, text)
 						utools.showNotification('保存成功')
+						utools.shellShowItemInFolder(savePath)
 					}
 				}
 			})
