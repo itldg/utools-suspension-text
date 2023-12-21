@@ -6,13 +6,15 @@ ipcRenderer.on('init', (event) => {
 })
 
 window.resize = (width, height) => {
-	ipcRenderer.sendTo(winId,'resize',width, height)
+	ipcRenderer.sendTo(winId, 'resize', width, height)
 }
 
 window.saveText = (text) => {
-	ipcRenderer.sendTo(winId,'saveText',text)
+	ipcRenderer.sendTo(winId, 'saveText', text)
 }
-
+window.copyText = (text) => {
+	ipcRenderer.sendTo(winId, 'copyText', text)
+}
 window.moveBounds = (x, y, width, height) => {
-	ipcRenderer.sendTo(winId, 'moveBounds', x, y, width, height);
+	ipcRenderer.sendTo(winId, 'moveBounds', x, y, width, height)
 }

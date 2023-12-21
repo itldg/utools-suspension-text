@@ -11,7 +11,7 @@ function show() {
 			minimizable: false,
 			maximizable: false,
 			//最小尺寸
-			minWidth: 10,
+			minWidth: 130,
 			minHeight: 10,
 			// 全屏
 			fullscreenable: false,
@@ -55,7 +55,18 @@ function show() {
 					}
 				}
 			})
-			
+
+			//复制悬浮文本
+			ipcRenderer.on('copyText', (event, text) => {
+				if (event.senderId == ubWindow.webContents.id) {
+					if (utools.copyText(text)) {
+						utools.showNotification('内容已复制')
+					} else {
+						utools.showNotification('复制内容失败')
+					}
+				}
+			})
+
 			//拖拽移动窗口(纯css的win支持不好,光标不变化)
 			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
 				if (event.senderId == ubWindow.webContents.id) {

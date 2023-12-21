@@ -75,6 +75,9 @@ window.init = async () => {
 	document.getElementById('save-btn').addEventListener('click', () => {
 		window.saveText(content.value)
 	})
+	document.getElementById('copy-btn').addEventListener('click', () => {
+		window.copyText(content.value)
+	})
 
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''

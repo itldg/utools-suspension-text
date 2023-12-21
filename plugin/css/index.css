@@ -226,7 +226,7 @@ body.dark #content {
 .top-bar-icon:first-of-type {
 	margin-left: 0px;
 }
-@media (width <= 140px) {
+@media (width <= 185px) {
 	#soft-title {
 		display: none;
 	}
