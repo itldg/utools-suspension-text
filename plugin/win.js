@@ -127,7 +127,7 @@ window.init = async () => {
 			x: window.screenLeft,
 		}
 		localStorage.setItem('position', JSON.stringify(position))
-		window.close()
+		window.exit()
 	}
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
@@ -135,7 +135,7 @@ window.init = async () => {
 			if (escFirst) {
 				clearTimeout(closeTimer)
 				localStorage.removeItem('lastText')
-				window.close()
+				window.exit()
 				return
 			}
 			escFirst = true

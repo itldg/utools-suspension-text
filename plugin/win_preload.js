@@ -15,6 +15,11 @@ window.saveText = (text) => {
 window.copyText = (text) => {
 	ipcRenderer.sendTo(winId, 'copyText', text)
 }
+
 window.moveBounds = (x, y, width, height) => {
 	ipcRenderer.sendTo(winId, 'moveBounds', x, y, width, height)
+}
+
+window.exit = () => {
+	ipcRenderer.sendTo(winId, 'exit')
 }

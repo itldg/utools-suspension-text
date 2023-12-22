@@ -34,51 +34,54 @@ function show() {
 
 			//调整窗口尺寸
 			ipcRenderer.on('resize', (event, width, height) => {
-				if (event.senderId == ubWindow.webContents.id) {
-					ubWindow.setSize(parseInt(width), parseInt(height))
-					ubWindow.center() // 窗口居中
-				}
+				if (event.senderId != ubWindow.webContents.id) return
+				ubWindow.setSize(parseInt(width), parseInt(height))
+				ubWindow.center() // 窗口居中
 			})
 
 			//保存悬浮文本
 			ipcRenderer.on('saveText', (event, text) => {
-				if (event.senderId == ubWindow.webContents.id) {
-					let defaultPath = utools.getPath('downloads') + '/suspend_text_' + new Date().getTime() + '.txt'
-					let savePath = utools.showSaveDialog({
-						title: '保存悬浮文本',
-						defaultPath: defaultPath,
-						buttonLabel: '保存',
-					})
-					if (savePath) {
-						fs.writeFileSync(savePath, text)
-						utools.showNotification('保存成功')
-						utools.shellShowItemInFolder(savePath)
-					}
+				if (event.senderId != ubWindow.webContents.id) return
+				let defaultPath = utools.getPath('downloads') + '/suspend_text_' + new Date().getTime() + '.txt'
+				let savePath = utools.showSaveDialog({
+					title: '保存悬浮文本',
+					defaultPath: defaultPath,
+					buttonLabel: '保存',
+				})
+				if (savePath) {
+					fs.writeFileSync(savePath, text)
+					utools.showNotification('保存成功')
+					utools.shellShowItemInFolder(savePath)
 				}
 			})
 
 			//复制悬浮文本
 			ipcRenderer.on('copyText', (event, text) => {
-				if (event.senderId == ubWindow.webContents.id) {
-					if (utools.copyText(text)) {
-						utools.showNotification('内容已复制')
-					} else {
-						utools.showNotification('复制内容失败')
-					}
+				if (event.senderId != ubWindow.webContents.id) return
+				if (utools.copyText(text)) {
+					utools.showNotification('内容已复制')
+				} else {
+					utools.showNotification('复制内容失败')
 				}
+			})
+
+			//退出插件
+			ipcRenderer.on('exit', (event) => {
+				if (event.senderId != ubWindow.webContents.id) return
+				utools.outPlugin()
+				process.exit()
 			})
 
 			//拖拽移动窗口(纯css的win支持不好,光标不变化)
 			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
-				if (event.senderId == ubWindow.webContents.id) {
-					let newBounds = {
-						x: parseInt(x),
-						y: parseInt(y),
-						width: parseInt(width),
-						height: parseInt(height),
-					}
-					ubWindow.setBounds(newBounds)
+				if (event.senderId != ubWindow.webContents.id) return
+				let newBounds = {
+					x: parseInt(x),
+					y: parseInt(y),
+					width: parseInt(width),
+					height: parseInt(height),
 				}
+				ubWindow.setBounds(newBounds)
 			})
 			// 显示
 			ubWindow.show()
