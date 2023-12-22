@@ -1,4 +1,6 @@
 const { ipcRenderer } = require('electron')
+// 存储只与当前设备相关的信息
+const nativeId = utools.getNativeId() + '/'
 const fs = require('fs')
 function show() {
 	const ubWindow = utools.createBrowserWindow(
@@ -72,6 +74,21 @@ function show() {
 				process.exit()
 			})
 
+			ipcRenderer.on('dbSetItem', (event, key, value) => {
+				if (event.senderId != ubWindow.webContents.id) return
+				utools.dbStorage.setItem(nativeId + key, value)
+			})
+
+			// ipcMain.handle('dbGetItem', (event, args) => {
+			// 	// if (event.senderId != ubWindow.webContents.id) return
+			// 	return utools.dbStorage.getItem(nativeId + args.key)
+			// })
+
+			ipcRenderer.on('dbRemoveItem', (event, key) => {
+				if (event.senderId != ubWindow.webContents.id) return
+				utools.dbStorage.removeItem(nativeId + key)
+			})
+
 			//拖拽移动窗口(纯css的win支持不好,光标不变化)
 			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
 				if (event.senderId != ubWindow.webContents.id) return
@@ -96,6 +113,11 @@ window.exports = {
 		args: {
 			enter: (action) => {
 				window.utools.hideMainWindow()
+				localStorage.clear()
+				const datas = utools.db.allDocs(nativeId)
+				datas.forEach((data) => {
+					localStorage.setItem(data._id.substr(nativeId.length), data.value)
+				})
 				if (action.type === 'over') {
 					localStorage.setItem('lastText', action.payload)
 					localStorage.setItem('new', true)

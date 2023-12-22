@@ -23,3 +23,15 @@ window.moveBounds = (x, y, width, height) => {
 window.exit = () => {
 	ipcRenderer.sendTo(winId, 'exit')
 }
+
+window.dbSetItem = (key, value) => {
+	// console.log('dbSetItem', key, value)
+	ipcRenderer.sendTo(winId, 'dbSetItem', key, value)
+	// localStorage.setItem(key, value)
+}
+
+window.dbRemoveItem = (key) => {
+	// console.log('dbRemoveItem', key)
+	ipcRenderer.sendTo(winId, 'dbRemoveItem', key)
+	// localStorage.removeItem(key)
+}

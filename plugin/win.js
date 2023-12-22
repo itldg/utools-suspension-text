@@ -85,7 +85,7 @@ window.init = async () => {
 
 	if (localStorage.getItem('new') !== null) {
 		console.log('带着内容进入插件')
-		localStorage.removeItem('new')
+		window.dbRemoveItem('new')
 		//根据文本计算每行最宽
 		const lines = lastText.split('\n')
 		let maxWidth = 0
@@ -119,14 +119,14 @@ window.init = async () => {
 	let closeTimer = null
 	let escFirst = false
 	function close() {
-		localStorage.setItem('lastText', content.value)
-		localStorage.setItem('width', window.outerWidth)
-		localStorage.setItem('height', window.outerHeight)
+		window.dbSetItem('lastText', content.value)
+		window.dbSetItem('width', window.outerWidth)
+		window.dbSetItem('height', window.outerHeight)
 		const position = {
 			y: window.screenTop,
 			x: window.screenLeft,
 		}
-		localStorage.setItem('position', JSON.stringify(position))
+		window.dbSetItem('position', JSON.stringify(position))
 		window.exit()
 	}
 	//按下esc关闭窗口
@@ -134,7 +134,7 @@ window.init = async () => {
 		if (event.key === 'Escape') {
 			if (escFirst) {
 				clearTimeout(closeTimer)
-				localStorage.removeItem('lastText')
+				window.dbRemoveItem('lastText')
 				window.exit()
 				return
 			}
@@ -378,7 +378,7 @@ function changeFontSize() {
  * 保存设置
  */
 function saveOptions() {
-	localStorage.setItem('option', JSON.stringify(options))
+	window.dbSetItem('option', JSON.stringify(options))
 }
 const canvasTemp = document.createElement('canvas')
 const ctx = canvasTemp.getContext('2d', { willReadFrequently: true })
