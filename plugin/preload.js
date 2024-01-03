@@ -71,7 +71,8 @@ function show() {
 			ipcRenderer.on('exit', (event) => {
 				if (event.senderId != ubWindow.webContents.id) return
 				utools.outPlugin()
-				process.exit()
+				//fix: 修复关闭窗口所有多开窗口都会被关闭
+				// process.exit()
 			})
 
 			ipcRenderer.on('dbSetItem', (event, key, value) => {
