@@ -127,7 +127,7 @@ window.init = async () => {
 			x: window.screenLeft,
 		}
 		window.dbSetItem('position', JSON.stringify(position))
-		window.exit()
+		window.close()
 	}
 	//按下esc关闭窗口
 	document.addEventListener('keydown', (event) => {
@@ -135,7 +135,7 @@ window.init = async () => {
 			if (escFirst) {
 				clearTimeout(closeTimer)
 				window.dbRemoveItem('lastText')
-				window.exit()
+				window.close()
 				return
 			}
 			escFirst = true

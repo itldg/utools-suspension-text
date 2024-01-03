@@ -20,10 +20,6 @@ window.moveBounds = (x, y, width, height) => {
 	ipcRenderer.sendTo(winId, 'moveBounds', x, y, width, height)
 }
 
-window.exit = () => {
-	ipcRenderer.sendTo(winId, 'exit')
-}
-
 window.dbSetItem = (key, value) => {
 	// console.log('dbSetItem', key, value)
 	ipcRenderer.sendTo(winId, 'dbSetItem', key, value)
