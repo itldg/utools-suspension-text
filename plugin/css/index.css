@@ -223,6 +223,10 @@ body:hover #top-bar {
 .top-bar-icon:first-of-type {
 	margin-left: 0px;
 }
+#always-on-top-btn.active {
+	--color: #ff3d00;
+	transform: rotate(-45deg);
+}
 @media (width <= 185px) {
 	#soft-title {
 		display: none;

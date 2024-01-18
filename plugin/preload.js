@@ -13,7 +13,7 @@ function show() {
 			minimizable: false,
 			maximizable: false,
 			//最小尺寸
-			minWidth: 130,
+			minWidth: 160,
 			minHeight: 10,
 			// 全屏
 			fullscreenable: false,
@@ -21,7 +21,7 @@ function show() {
 			transparent: true,
 			backgroundColor: '#00000000',
 			frame: false,
-			alwaysOnTop: true,
+			// alwaysOnTop: true,//改为自定义
 			// 无边框
 			thickFrame: false,
 			webPreferences: {
@@ -82,6 +82,13 @@ function show() {
 				utools.dbStorage.removeItem(nativeId + key)
 			})
 
+			//设置窗口置顶 value不等于空时设置为置顶
+			ipcRenderer.on('setAlwaysOnTop', (event, value) => {
+				if (event.senderId != ubWindow.webContents.id) return
+				ubWindow.setAlwaysOnTop(value) // 设置窗口置顶状态
+				utools.dbStorage.setItem(nativeId + 'AlwaysOnTop', value)
+			})
+
 			//拖拽移动窗口(纯css的win支持不好,光标不变化)
 			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
 				if (event.senderId != ubWindow.webContents.id) return
@@ -93,6 +100,9 @@ function show() {
 				}
 				ubWindow.setBounds(newBounds)
 			})
+			if (!!localStorage.getItem('AlwaysOnTop')) {
+				ubWindow.setAlwaysOnTop(true)
+			}
 			// 显示
 			ubWindow.show()
 			// 初始化

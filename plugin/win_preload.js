@@ -31,3 +31,7 @@ window.dbRemoveItem = (key) => {
 	ipcRenderer.sendTo(winId, 'dbRemoveItem', key)
 	// localStorage.removeItem(key)
 }
+
+window.setAlwaysOnTop = (value) => {
+	ipcRenderer.sendTo(winId, 'setAlwaysOnTop', !!value ? 'true' : '')
+}

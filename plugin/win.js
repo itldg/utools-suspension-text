@@ -78,6 +78,21 @@ window.init = async () => {
 	document.getElementById('copy-btn').addEventListener('click', () => {
 		window.copyText(content.value)
 	})
+	let alwaysOnTopBtn = document.getElementById('always-on-top-btn')
+	let alwaysOnTop = !!localStorage.getItem('AlwaysOnTop')
+	showAlwaysOnTopState()
+	function showAlwaysOnTopState() {
+		if (alwaysOnTop) {
+			alwaysOnTopBtn.classList.add('active')
+		} else {
+			alwaysOnTopBtn.classList.remove('active')
+		}
+	}
+	alwaysOnTopBtn.addEventListener('click', () => {
+		alwaysOnTop = !alwaysOnTop
+		window.setAlwaysOnTop(alwaysOnTop)
+		showAlwaysOnTopState()
+	})
 
 	//读取历史数据
 	const lastText = localStorage.getItem('lastText') ?? ''
