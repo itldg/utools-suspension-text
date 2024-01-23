@@ -200,11 +200,8 @@ body.dark #content {
 	padding: 0 10px;
 	cursor: move;
 	user-select: none;
-	display: none;
-	z-index: 2;
-}
-body:hover #top-bar {
 	display: flex;
+	z-index: 2;
 }
 
 .top-bar-icon {
