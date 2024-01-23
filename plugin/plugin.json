@@ -4,7 +4,7 @@
 	"author": "IT老大哥",
 	"homepage": "https://www.itldg.com",
 	"preload": "preload.js",
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"logo": "icon.png",
 	"features": [
 		{

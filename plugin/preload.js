@@ -2,6 +2,19 @@ const { ipcRenderer } = require('electron')
 // 存储只与当前设备相关的信息
 const nativeId = utools.getNativeId() + '/'
 const fs = require('fs')
+const path = require('path');
+function getNow() {
+	const now = new Date()
+	const year = now.getFullYear()
+	const month = String(now.getMonth() + 1).padStart(2, '0')
+	const day = String(now.getDate()).padStart(2, '0')
+	const hours = String(now.getHours()).padStart(2, '0')
+	const minutes = String(now.getMinutes()).padStart(2, '0')
+	const seconds = String(now.getSeconds()).padStart(2, '0')
+
+	const currentDateTime = `${year}_${month}_${day} ${hours}_${minutes}_${seconds}`
+	return currentDateTime
+}
 function show() {
 	const ubWindow = utools.createBrowserWindow(
 		'win.html',
@@ -44,13 +57,19 @@ function show() {
 			//保存悬浮文本
 			ipcRenderer.on('saveText', (event, text) => {
 				if (event.senderId != ubWindow.webContents.id) return
-				let defaultPath = utools.getPath('downloads') + '/suspend_text_' + new Date().getTime() + '.txt'
+				let save_dir = utools.dbStorage.getItem(nativeId + 'save_dir')
+				if (save_dir == null) {
+					save_dir = utools.getPath('downloads')
+				}
+				let defaultPath = save_dir + '/悬浮文本_' + getNow() + '.txt'
 				let savePath = utools.showSaveDialog({
 					title: '保存悬浮文本',
 					defaultPath: defaultPath,
 					buttonLabel: '保存',
 				})
 				if (savePath) {
+					const folderPath = path.dirname(savePath)
+					utools.dbStorage.setItem(nativeId + 'save_dir', folderPath)
 					fs.writeFileSync(savePath, text)
 					utools.showNotification('保存成功')
 					utools.shellShowItemInFolder(savePath)
