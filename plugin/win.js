@@ -235,7 +235,7 @@ window.init = async () => {
 		//获取dom的高度,更改窗口高度
 		const height = content.scrollHeight + options.border * 2
 		// console.log('高度', height)
-		window.resize(width, height)
+		window.resize(width, height + topBar.clientHeight)
 	}
 	let optionTemp = {}
 	//绑定参数更新事件
