@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron')
 // 存储只与当前设备相关的信息
 const nativeId = utools.getNativeId() + '/'
 const fs = require('fs')
-const path = require('path');
+const path = require('path')
 function getNow() {
 	const now = new Date()
 	const year = now.getFullYear()
@@ -85,7 +85,6 @@ function show() {
 					utools.showNotification('复制内容失败')
 				}
 			})
-
 			ipcRenderer.on('dbSetItem', (event, key, value) => {
 				if (event.senderId != ubWindow.webContents.id) return
 				utools.dbStorage.setItem(nativeId + key, value)
@@ -100,14 +99,25 @@ function show() {
 				if (event.senderId != ubWindow.webContents.id) return
 				utools.dbStorage.removeItem(nativeId + key)
 			})
-
+			function setOnTop() {
+				// 设置窗口在所有工作区都可见
+				ubWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+				ubWindow.setAlwaysOnTop(true, 'normal') // 设置窗口置顶状态
+			}
 			//设置窗口置顶 value不等于空时设置为置顶
 			ipcRenderer.on('setAlwaysOnTop', (event, value) => {
 				if (event.senderId != ubWindow.webContents.id) return
-				ubWindow.setAlwaysOnTop(value) // 设置窗口置顶状态
+				if (value) {
+					setOnTop()
+				} else {
+					ubWindow.setAlwaysOnTop(false) // 设置窗口非置顶状态
+				}
+
 				utools.dbStorage.setItem(nativeId + 'AlwaysOnTop', value)
 			})
-
+			if (!!localStorage.getItem('AlwaysOnTop')) {
+				setOnTop()
+			}
 			//拖拽移动窗口(纯css的win支持不好,光标不变化)
 			ipcRenderer.on('moveBounds', (event, x, y, width, height) => {
 				if (event.senderId != ubWindow.webContents.id) return
@@ -119,9 +129,7 @@ function show() {
 				}
 				ubWindow.setBounds(newBounds)
 			})
-			if (!!localStorage.getItem('AlwaysOnTop')) {
-				ubWindow.setAlwaysOnTop(true)
-			}
+
 			// 显示
 			ubWindow.show()
 			// 初始化
