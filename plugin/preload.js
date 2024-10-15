@@ -102,7 +102,7 @@ function show() {
 			function setOnTop() {
 				// 设置窗口在所有工作区都可见
 				ubWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-				ubWindow.setAlwaysOnTop(true, 'normal') // 设置窗口置顶状态
+				ubWindow.setAlwaysOnTop(true, 'screen-saver') // 设置窗口置顶状态
 			}
 			//设置窗口置顶 value不等于空时设置为置顶
 			ipcRenderer.on('setAlwaysOnTop', (event, value) => {
