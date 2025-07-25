@@ -20,6 +20,8 @@ const userOption = {
 	border: 10,
 	//最大宽度
 	maxWidth: 600,
+	//自动计算窗口尺寸
+	autoWinSize: true,
 }
 let options = {}
 
@@ -53,8 +55,8 @@ window.init = async () => {
 		if (fontList.innerHTML === '') {
 			await logFontData()
 		}
-		if (window.outerWidth < 320 || window.outerHeight < 420) {
-			window.resize(Math.max(window.outerWidth, 320), Math.max(window.outerHeight, 420))
+		if (window.outerWidth < 320 || window.outerHeight < 480) {
+			window.resize(Math.max(window.outerWidth, 320), Math.max(window.outerHeight, 480))
 		}
 		option.style.display = 'block'
 		document.body.classList.add('open')
@@ -101,30 +103,24 @@ window.init = async () => {
 	if (localStorage.getItem('new') !== null) {
 		console.log('带着内容进入插件')
 		window.dbRemoveItem('new')
-		//根据文本计算每行最宽
-		const lines = lastText.split('\n')
-		let maxWidth = 0
-		const font = window.getComputedStyle(content).font
-		for (let i = 0; i < lines.length; i++) {
-			maxWidth = Math.max(maxWidth, getTextWidth(lines[i], font))
+		if (options.autoWinSize) {
+			//根据文本计算每行最宽
+			const lines = lastText.split('\n')
+			let maxWidth = 0
+			const font = window.getComputedStyle(content).font
+			for (let i = 0; i < lines.length; i++) {
+				maxWidth = Math.max(maxWidth, getTextWidth(lines[i], font))
+			}
+			//末尾+10 适应滚动条
+			const width = (maxWidth > options.maxWidth ? options.maxWidth : maxWidth) + options.border * 2 + 10
+			window.resize(width, options.fontSize)
+			autoHeight(width)
+		} else {
+			useLastSizeAndPostion()
 		}
-		//末尾+10 适应滚动条
-		const width = (maxWidth > options.maxWidth ? options.maxWidth : maxWidth) + options.border * 2 + 10
-		window.resize(width, options.fontSize)
-		autoHeight(width)
 	} else {
 		console.log('使用上次缓存内容')
-		const width = localStorage.getItem('width')
-		const height = localStorage.getItem('height')
-		const positionJSON = localStorage.getItem('position')
-		if (width && height) {
-			window.resize(width, height)
-			// 位置记忆
-			if (positionJSON) {
-				const position = JSON.parse(positionJSON)
-				window.moveBounds(position.x, position.y, width, height)
-			}
-		}
+		useLastSizeAndPostion()
 	}
 	content.style.height = '100%'
 	let lastWidth = 0
@@ -180,7 +176,20 @@ window.init = async () => {
 			changeFontSize()
 		}
 	})
-
+	//使用最后一次的尺寸和未知
+	function useLastSizeAndPostion() {
+		const width = localStorage.getItem('width')
+		const height = localStorage.getItem('height')
+		const positionJSON = localStorage.getItem('position')
+		if (width && height) {
+			window.resize(width, height)
+			// 位置记忆
+			if (positionJSON) {
+				const position = JSON.parse(positionJSON)
+				window.moveBounds(position.x, position.y, width, height)
+			}
+		}
+	}
 	async function logFontData() {
 		try {
 			let availableFonts = await window.queryLocalFonts()
@@ -243,7 +252,12 @@ window.init = async () => {
 		const target = event.target
 		const name = target.id
 		if (optionTemp[name] === undefined) return
-		const value = target.value
+		let value
+		if (target.type === 'checkbox') {
+			value = target.checked
+		} else {
+			value = target.value
+		}
 		optionTemp[name] = value
 		show(optionTemp)
 	})
@@ -252,7 +266,12 @@ window.init = async () => {
 	function setOption() {
 		for (const key in options) {
 			const el = document.getElementById(key)
-			if (el) {
+			if (!el) {
+				continue
+			}
+			if (el.type === 'checkbox') {
+				el.checked = options[key]
+			} else {
 				el.value = options[key]
 			}
 		}
