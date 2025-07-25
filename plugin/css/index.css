@@ -224,7 +224,7 @@ body.dark #content {
 	--color: #ff3d00;
 	transform: rotate(-45deg);
 }
-@media (width <= 185px) {
+@media (width <= 240px) {
 	#soft-title {
 		display: none;
 	}
